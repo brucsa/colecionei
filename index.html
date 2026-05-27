@@ -55,11 +55,57 @@
     max-width:var(--maxw);
     margin:0 auto;
     padding:10px var(--pad-x);
-    display:grid;
-    grid-template-columns:auto 1fr auto;
+    display:flex;
     align-items:center;
+    justify-content:space-between;
     gap:14px;
   }
+  @media(min-width:660px){
+    .topbar-inner{display:grid;grid-template-columns:auto 1fr auto;}
+    .hamburger-btn{display:none}
+    .nav-drawer{display:none !important}
+  }
+  @media(max-width:659px){
+    .topbar .progress-wrap,.topbar .actions{display:none}
+  }
+  .hamburger-btn{
+    flex:0 0 auto;background:none;
+    border:1px solid var(--line-2);border-radius:8px;
+    width:36px;height:36px;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    transition:background .12s;
+  }
+  .hamburger-btn:hover{background:var(--tile)}
+  .hamburger-btn .bar{
+    display:block;width:16px;height:1.5px;
+    background:var(--ink);border-radius:2px;
+    transition:transform .2s,opacity .2s;
+  }
+  .hamburger-btn.is-open .bar:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+  .hamburger-btn.is-open .bar:nth-child(2){opacity:0;transform:scaleX(0)}
+  .hamburger-btn.is-open .bar:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+  .nav-drawer{
+    display:none;flex-direction:column;gap:14px;
+    padding:14px var(--pad-x) 16px;
+    border-top:1px solid var(--line);
+  }
+  .nav-drawer.is-open{display:flex}
+  .nav-drawer .d-progress{display:flex;align-items:center;gap:10px}
+  .nav-drawer .d-track{
+    flex:1;height:6px;background:var(--tile);border-radius:99px;
+    border:1px solid var(--line-2);overflow:hidden;
+  }
+  .nav-drawer .d-fill{
+    height:100%;width:0%;transition:width .3s ease;
+    background:linear-gradient(90deg,var(--green) 0%,var(--green-2) 100%);
+  }
+  .nav-drawer .d-count{
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--ink);
+    white-space:nowrap;
+  }
+  .nav-drawer .d-count .sub{color:var(--ink-3);font-weight:400}
+  .nav-drawer .d-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .nav-drawer .d-btns{display:flex;gap:6px}
   .brand{display:flex;align-items:center;gap:10px;min-width:0}
   .brand-mark{
     width:32px;height:32px;border-radius:50%;
@@ -670,6 +716,31 @@
       <button class="btn" id="export" title="Imprimir ou salvar como PDF">Imprimir</button>
       <button class="btn yellow" id="reset" title="Limpar todas as marcações">Limpar</button>
     </div>
+    <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu" aria-expanded="false">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  </div>
+  <div class="nav-drawer" id="nav-drawer">
+    <div class="d-progress">
+      <div class="d-track"><div class="d-fill" id="d-fill"></div></div>
+      <div class="d-count"><span id="d-counter">0</span><span class="sub">/980</span> · <span id="d-pct">0%</span></div>
+    </div>
+    <div class="d-row">
+      <div class="account" id="d-account">
+        <div class="avatar" id="d-avatar">·</div>
+        <div class="who">
+          <span class="n" id="d-acct-name">—</span>
+          <span class="p" id="d-acct-phone"></span>
+        </div>
+        <button class="logout" id="d-logout" title="Sair">↩</button>
+      </div>
+      <div class="d-btns">
+        <button class="btn" id="d-export">Imprimir</button>
+        <button class="btn yellow" id="d-reset">Limpar</button>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -891,14 +962,31 @@
   function enterApp(user){
     closeAuth();
     appEl.classList.add("is-on");
-    // hero name
     document.getElementById("meta-name").textContent = user.name || "—";
-    // account chip
     document.getElementById("acct-name").textContent = user.name || "Conta";
     document.getElementById("acct-phone").textContent = user.phone || (user.provider === "google" ? "via Google" : "");
     const initials = (user.name || "·").trim().split(/\s+/).slice(0,2).map(w => w[0] || "").join("").toUpperCase() || "·";
     document.getElementById("avatar").textContent = initials;
+    document.getElementById("d-acct-name").textContent = user.name || "Conta";
+    document.getElementById("d-acct-phone").textContent = user.phone || (user.provider === "google" ? "via Google" : "");
+    document.getElementById("d-avatar").textContent = initials;
   }
+
+  const hamburgerBtn = document.getElementById("hamburger-btn");
+  const navDrawer = document.getElementById("nav-drawer");
+  hamburgerBtn.addEventListener("click", () => {
+    const isOpen = navDrawer.classList.toggle("is-open");
+    hamburgerBtn.classList.toggle("is-open", isOpen);
+    hamburgerBtn.setAttribute("aria-expanded", String(isOpen));
+  });
+  document.getElementById("d-logout").addEventListener("click", () => {
+    navDrawer.classList.remove("is-open");
+    hamburgerBtn.classList.remove("is-open");
+    hamburgerBtn.setAttribute("aria-expanded","false");
+    document.getElementById("logout").click();
+  });
+  document.getElementById("d-export").addEventListener("click", () => window.print());
+  document.getElementById("d-reset").addEventListener("click", () => document.getElementById("reset").click());
 
   document.getElementById("logout").addEventListener("click", () => {
     if(!confirm("Sair da sua conta? O progresso continua salvo neste navegador.")) return;
@@ -1042,6 +1130,12 @@
     statDone.textContent = done;
     statLeft.textContent = total - done;
     statPct.textContent = Math.round(p*100) + "%";
+    const dFill = document.getElementById("d-fill");
+    const dCounter = document.getElementById("d-counter");
+    const dPct = document.getElementById("d-pct");
+    if(dFill) dFill.style.width = (p*100).toFixed(2) + "%";
+    if(dCounter) dCounter.textContent = done;
+    if(dPct) dPct.textContent = Math.round(p*100) + "%";
     let complete = 0;
     SECTIONS.forEach((s, idx) => { if(countDone(idx) === 20) complete++; });
     statComplete.textContent = complete;
