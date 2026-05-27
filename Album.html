@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Colecionei — Copa 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0e1a14;
+    --ink-2:#2c3a32;
+    --ink-3:#6f7f74;
+    --paper:#faf8f1;
+    --line:#e7e3d4;
+    --line-2:#d5d0bd;
+    --tile:#efebdc;
+    --tile-ink:#7e7a66;
+
+    --green:#067a3a;          /* deep field green */
+    --green-2:#0a9447;        /* brighter accent green */
+    --green-ink:#ffffff;
+    --yellow:#ffd233;         /* canary yellow */
+    --yellow-deep:#e6b800;
+    --highlight:#fff3a8;      /* light yellow tint */
+
+    --maxw: 880px;
+    --pad-x: clamp(16px, 4vw, 40px);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh}
+
+  /* Soft turf stripes behind the whole app */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(6,122,58,0.025) 0 60px,
+        transparent 60px 120px);
+  }
+  body > *{position:relative;z-index:1}
+
+  /* ===== Sticky bar ===== */
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    background:rgba(250,248,241,.92);
+    backdrop-filter:saturate(140%) blur(10px);
+    -webkit-backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:10px var(--pad-x);
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:14px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .brand-mark{
+    width:32px;height:32px;border-radius:50%;
+    background:
+      conic-gradient(from 0deg,
+        var(--green) 0 30deg, var(--yellow) 30deg 60deg,
+        var(--green) 60deg 150deg, var(--yellow) 150deg 180deg,
+        var(--green) 180deg 270deg, var(--yellow) 270deg 300deg,
+        var(--green) 300deg 360deg);
+    position:relative;flex:0 0 auto;
+    border:1.5px solid var(--ink);
+  }
+  .brand-mark::after{
+    content:"";position:absolute;inset:6px;border-radius:50%;
+    background:var(--paper);border:1.5px solid var(--ink);
+  }
+  .brand-mark::before{
+    content:"";position:absolute;left:50%;top:50%;
+    width:6px;height:6px;border-radius:50%;
+    background:var(--ink);
+    transform:translate(-50%,-50%);
+    z-index:1;
+  }
+  .brand-text{display:flex;flex-direction:column;line-height:1;min-width:0}
+  .brand-text .b1{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--green);text-transform:uppercase}
+  .brand-text .b2{font-weight:700;font-size:13.5px;letter-spacing:.01em;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .topbar .progress-wrap{display:flex;align-items:center;gap:10px;min-width:0}
+  .topbar .track{
+    flex:1;height:6px;background:var(--tile);border-radius:99px;
+    border:1px solid var(--line-2);overflow:hidden;min-width:60px;
+    position:relative;
+  }
+  .topbar .fill{
+    height:100%;width:0%;transition:width .3s ease;
+    background:linear-gradient(90deg, var(--green) 0%, var(--green-2) 100%);
+  }
+  .topbar .count{
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--ink);
+    white-space:nowrap;
+  }
+  .topbar .count .sub{color:var(--ink-3);font-weight:400}
+
+  .topbar .actions{display:flex;gap:6px;align-items:center}
+  .btn{
+    border:1px solid var(--line-2);
+    background:var(--paper);
+    color:var(--ink-2);
+    font:500 12px/1 'Inter',sans-serif;
+    padding:8px 12px;border-radius:99px;cursor:pointer;
+    transition:background .12s, border-color .12s, color .12s, transform .08s;
+  }
+  .btn:hover{background:var(--tile);border-color:var(--ink-3)}
+  .btn:active{transform:scale(.97)}
+  .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
+  .btn.primary:hover{background:var(--green-2);border-color:var(--green-2)}
+  .btn.yellow{background:var(--yellow);color:var(--ink);border-color:var(--yellow-deep)}
+  .btn.yellow:hover{background:var(--yellow-deep);border-color:var(--yellow-deep)}
+
+  /* Account chip on the right of the topbar */
+  .account{
+    display:flex;align-items:center;gap:8px;
+    padding:5px 6px 5px 10px;
+    border:1px solid var(--line-2);
+    border-radius:99px;
+    background:var(--paper);
+    font-size:12px;color:var(--ink);
+    max-width:200px;
+  }
+  .account .who{
+    display:flex;flex-direction:column;line-height:1;min-width:0;
+  }
+  .account .who .n{font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+  .account .who .p{font-size:10px;color:var(--ink-3);margin-top:2px;font-family:'JetBrains Mono',monospace}
+  .account .avatar{
+    width:24px;height:24px;border-radius:50%;
+    background:var(--green);color:#fff;
+    font-weight:700;font-size:11px;
+    display:grid;place-items:center;
+    flex:0 0 auto;
+  }
+  .account button.logout{
+    border:none;background:transparent;cursor:pointer;color:var(--ink-3);
+    font-size:14px;padding:2px 6px;
+  }
+  .account button.logout:hover{color:var(--ink)}
+  @media (max-width:560px){
+    .account .who .p{display:none}
+  }
+
+  /* ===== Hero ===== */
+  .hero{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:48px var(--pad-x) 24px;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  /* Brazil flag */
+  .br-flag{
+    --w: 48px;
+    width:var(--w);
+    aspect-ratio: 10 / 7;
+    position:relative;
+    border-radius:3px;
+    overflow:hidden;
+    background:#009c3b;
+    box-shadow:0 1px 0 rgba(0,0,0,.1), 0 2px 8px rgba(0,0,0,.08);
+    flex:0 0 auto;
+  }
+  .br-flag::before{
+    /* yellow rhombus */
+    content:"";position:absolute;
+    left:50%;top:50%;
+    width:64%;height:62%;
+    background:#ffdf00;
+    transform:translate(-50%,-50%) rotate(45deg);
+    border-radius:2px;
+  }
+  .br-flag::after{
+    /* blue disc */
+    content:"";position:absolute;
+    left:50%;top:50%;
+    width:34%;aspect-ratio:1/1;
+    background:#002776;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+  }
+
+  .hero-top{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  .hero-top .br-flag{ --w: 56px }
+  .hero-top .ed-pill{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--ink);color:#fff;
+    font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+    padding:5px 10px;border-radius:99px;letter-spacing:.16em;
+  }
+  .hero-top .ed-pill::before{
+    content:"";width:6px;height:6px;border-radius:50%;background:var(--yellow);
+  }
+
+  .kicker{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:.28em;color:var(--ink-3);text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  .kicker .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+  .kicker .dot.y{background:var(--yellow-deep)}
+  .hero h1{
+    margin:0;font-size:clamp(34px,6vw,56px);font-weight:700;letter-spacing:-.02em;line-height:1;
+    text-wrap:balance;
+  }
+  .hero h1 em{font-style:italic;font-weight:500;color:var(--green)}
+  .hero h1 .acc{
+    display:inline-block;
+    background:linear-gradient(180deg, transparent 65%, var(--yellow) 65% 92%, transparent 92%);
+    padding:0 4px;
+  }
+  .hero p{
+    margin:0;font-size:15px;line-height:1.55;color:var(--ink-2);
+    width:100%;
+  }
+  .hero .meta{
+    margin-top:8px;
+    display:flex;flex-wrap:wrap;gap:18px 28px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-2);
+  }
+  .hero .meta .row{display:flex;align-items:center;gap:8px}
+  .hero .meta .lbl{color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;font-size:9.5px}
+  .hero .meta .val{
+    border-bottom:1.5px solid var(--green);min-width:160px;
+    padding:2px 6px;display:inline-block;
+    font-weight:600;color:var(--ink);
+  }
+
+  /* ===== Stats strip ===== */
+  .stats{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 var(--pad-x);
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:0;
+    border-top:1px solid var(--ink);
+    border-bottom:1px solid var(--ink);
+  }
+  .stat{
+    padding:14px 14px;
+    border-right:1px solid var(--line);
+    display:flex;flex-direction:column;gap:4px;
+    position:relative;
+  }
+  .stat:last-child{border-right:none}
+  .stat .k{
+    font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);
+  }
+  .stat .v{
+    font-family:'JetBrains Mono',monospace;font-weight:600;font-size:22px;color:var(--ink);
+    line-height:1;
+  }
+  .stat .v .sub{color:var(--ink-3);font-size:12px;font-weight:400}
+  .stat.is-done .v{color:var(--green)}
+  .stat.is-pct .v{color:var(--green)}
+  @media (max-width:640px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .stat{border-bottom:1px solid var(--line)}
+    .stat:nth-child(2){border-right:none}
+    .stat:nth-child(3),.stat:nth-child(4){border-bottom:none}
+    .stat:nth-child(2n){border-right:none}
+    .stat:nth-child(3){border-right:1px solid var(--line)}
+  }
+
+  /* ===== List of sections ===== */
+  .list{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:8px var(--pad-x) 24px;
+  }
+  .section{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+    padding:18px 0;
+    border-bottom:1px dashed var(--line);
+    scroll-margin-top:80px;
+  }
+  .section:last-child{border-bottom:none}
+
+  /* Group dividers */
+  .group-divider{
+    display:flex;align-items:center;gap:12px;
+    margin:24px calc(var(--pad-x) * -1) 0;
+    padding:18px var(--pad-x) 8px;
+    border-top:2px solid var(--ink);
+    position:relative;
+    scroll-margin-top:80px;
+  }
+  .group-divider:first-child{margin-top:8px;border-top:none;padding-top:8px}
+  .group-divider .g-letter{
+    font-family:'JetBrains Mono',monospace;
+    font-size:34px;font-weight:700;color:var(--green);
+    line-height:.9;letter-spacing:-.02em;
+    background:linear-gradient(180deg, transparent 0 55%, var(--yellow) 55% 80%, transparent 80%);
+    padding:0 6px;
+  }
+  .group-divider .g-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);font-weight:600;
+  }
+  .group-divider .g-rule{
+    flex:1;height:1px;background:var(--line-2);
+  }
+  .group-divider .g-count{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;color:var(--ink-3);font-weight:500;letter-spacing:.06em;
+  }
+  .group-divider.complete .g-count{color:var(--green);font-weight:700}
+  .group-divider.complete .g-letter{color:var(--green-2)}
+
+  /* TOC group label */
+  .toc-group{
+    margin-top:6px;padding-top:4px;
+    border-top:1px solid var(--line);
+    color:var(--ink) !important;
+    font-weight:600;
+    text-transform:uppercase;letter-spacing:.14em;font-size:9.5px;
+    pointer-events:auto;
+  }
+  .toc-group:first-child{margin-top:0;border-top:none;padding-top:0}
+  .section-head{
+    display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  }
+  .section-label{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-width:0}
+  .section-num{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);
+    letter-spacing:.1em;
+  }
+  .section-name{
+    font-weight:600;font-size:16px;letter-spacing:.01em;color:var(--ink);
+    text-transform:uppercase;
+  }
+  .section-code{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-3);
+    letter-spacing:.14em;
+  }
+  .section.is-home .section-name::after{
+    content:" ★";color:var(--green);font-weight:700;
+  }
+  .section.is-host .section-name{color:var(--green)}
+  .section.is-home{
+    background:
+      linear-gradient(90deg, var(--highlight), transparent 70%),
+      repeating-linear-gradient(135deg, transparent 0 8px, rgba(6,122,58,.05) 8px 16px);
+    margin:0 calc(var(--pad-x) * -1);
+    padding-left:var(--pad-x);
+    padding-right:var(--pad-x);
+  }
+  .section-progress{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);
+    white-space:nowrap;flex:0 0 auto;
+    display:flex;align-items:center;gap:8px;
+  }
+  .section-progress .done{color:var(--ink);font-weight:600}
+  .section-progress.complete{color:var(--green);font-weight:600}
+  .section-progress.complete .done{color:var(--green)}
+  .section-progress .badge{
+    display:none;
+    background:var(--green);color:#fff;
+    font-size:8px;letter-spacing:.14em;
+    padding:2px 6px;border-radius:99px;
+  }
+  .section-progress.complete .badge{display:inline-block}
+
+  .tiles{
+    display:grid;
+    grid-template-columns:repeat(20, minmax(0, 1fr));
+    gap:6px;
+  }
+  @media (max-width:760px){
+    .tiles{grid-template-columns:repeat(10, minmax(0, 1fr))}
+  }
+  @media (max-width:380px){
+    .tiles{grid-template-columns:repeat(5, minmax(0, 1fr))}
+  }
+
+  .tile{
+    aspect-ratio:1/1;
+    background:var(--tile);
+    border:1px solid var(--line-2);
+    border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;font-weight:500;
+    color:var(--tile-ink);
+    cursor:pointer;user-select:none;
+    transition:background .12s, color .12s, transform .08s, border-color .12s;
+    position:relative;min-height:0;
+  }
+  .tile:hover{border-color:var(--green)}
+  .tile.checked{
+    background:var(--green);color:#fff;border-color:var(--green);
+  }
+  .tile.checked::after{
+    content:"";position:absolute;inset:3px;
+    border:1px solid rgba(255,255,255,.4);border-radius:3px;
+    pointer-events:none;
+  }
+  .tile:active{transform:scale(.92)}
+
+  /* ===== Footer ===== */
+  footer{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:24px var(--pad-x) 80px;
+    border-top:1px solid var(--ink);
+    display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);
+    letter-spacing:.06em;
+  }
+  footer .legend{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  footer .legend span{display:inline-flex;align-items:center;gap:6px}
+  footer .legend .sw{
+    width:10px;height:10px;border-radius:2px;border:1px solid var(--line-2);background:var(--tile);
+  }
+  footer .legend .sw.done{background:var(--green);border-color:var(--green)}
+  footer .legend .sw.home{background:var(--highlight);border-color:var(--yellow-deep)}
+  footer .right{text-align:right;letter-spacing:.16em;text-transform:uppercase}
+
+  /* ===== Floating TOC ===== */
+  .toc{
+    position:fixed;left:max(16px, calc(50% - var(--maxw)/2 - 200px));
+    top:120px;
+    width:170px;
+    display:flex;flex-direction:column;gap:1px;
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;
+    z-index:10;
+    max-height:calc(100vh - 160px);
+    overflow:auto;
+    padding-right:8px;
+  }
+  .toc a{
+    display:flex;justify-content:space-between;gap:8px;
+    color:var(--ink-3);text-decoration:none;
+    padding:3px 0;
+    border-bottom:1px dashed transparent;
+  }
+  .toc a:hover{color:var(--ink);border-bottom-color:var(--line-2)}
+  .toc a .n{color:var(--ink-3);font-weight:400}
+  .toc a.complete .n{color:var(--green);font-weight:600}
+  .toc a.complete{color:var(--ink)}
+  @media (max-width:1240px){ .toc{display:none} }
+
+  /* ===== Auth overlay ===== */
+  .auth{
+    position:fixed;inset:0;z-index:100;
+    display:none;
+    align-items:center;justify-content:center;
+    padding:24px;
+    background:rgba(14,26,20,.55);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+  }
+  .auth.is-open{display:flex}
+  .auth-card{
+    width:100%;max-width:440px;
+    background:var(--paper);
+    border:1px solid var(--line-2);
+    border-radius:12px;
+    box-shadow:0 24px 64px rgba(0,0,0,.25);
+    overflow:hidden;
+    position:relative;
+  }
+  .auth-card::before{
+    content:"";display:block;height:5px;
+    background:linear-gradient(90deg,
+      var(--green) 0 33%,
+      var(--yellow) 33% 66%,
+      var(--green-2) 66% 100%);
+  }
+  .auth-body{padding:28px 28px 24px}
+  .auth-title{
+    display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  }
+  .auth-title .brand-mark{width:28px;height:28px}
+  .auth-title h2{margin:0;font-size:20px;font-weight:700;letter-spacing:-.01em}
+  .auth-title p{margin:0;font-size:12px;color:var(--ink-3);font-family:'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase}
+  .auth-step{display:none;flex-direction:column;gap:14px}
+  .auth-step.is-active{display:flex}
+
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);
+  }
+  .field input{
+    border:1px solid var(--line-2);
+    background:#fff;
+    border-radius:8px;
+    padding:11px 12px;
+    font:500 14px/1.2 'Inter',sans-serif;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .12s, box-shadow .12s;
+  }
+  .field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(6,122,58,.12)}
+  .field .hint{
+    font-size:11px;color:var(--ink-3);
+  }
+  .field .hint b{color:var(--ink-2);font-family:'JetBrains Mono',monospace;font-weight:600}
+
+  .otp{display:flex;gap:8px;justify-content:space-between}
+  .otp input{
+    width:100%;max-width:48px;aspect-ratio:1/1;
+    text-align:center;font:600 18px/1 'JetBrains Mono',monospace;
+    border:1px solid var(--line-2);border-radius:8px;background:#fff;
+    outline:none;
+  }
+  .otp input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(6,122,58,.12)}
+
+  .auth-actions{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .auth-actions .btn{padding:12px 14px;font-size:13.5px;width:100%;text-align:center}
+
+  .divider{
+    display:flex;align-items:center;gap:10px;
+    color:var(--ink-3);font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    margin:4px 0;
+  }
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .gbtn{
+    width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+    border:1px solid var(--line-2);background:#fff;color:var(--ink);
+    padding:11px 14px;border-radius:99px;cursor:pointer;
+    font:500 13.5px 'Inter',sans-serif;
+    transition:background .12s, border-color .12s;
+  }
+  .gbtn:hover{background:var(--tile);border-color:var(--ink-3)}
+  .gbtn svg{width:18px;height:18px;flex:0 0 auto}
+
+  .auth-back{
+    border:none;background:transparent;color:var(--ink-3);
+    font:500 12px 'Inter',sans-serif;cursor:pointer;
+    padding:6px 0;align-self:flex-start;
+  }
+  .auth-back:hover{color:var(--ink)}
+
+  .otp-note{
+    font-size:11.5px;color:var(--ink-2);
+    background:var(--highlight);
+    border:1px solid var(--yellow-deep);
+    border-radius:8px;
+    padding:10px 12px;
+    line-height:1.4;
+  }
+  .otp-note b{font-family:'JetBrains Mono',monospace;letter-spacing:.18em;color:var(--ink)}
+
+  .auth-fine{
+    font-size:10.5px;color:var(--ink-3);text-align:center;
+    margin-top:10px;line-height:1.5;
+  }
+  .auth-fine a{color:var(--green);text-decoration:none;border-bottom:1px dotted var(--green)}
+
+  .app-shell{display:none}
+  .app-shell.is-on{display:contents}
+
+  /* Print */
+  @media print{
+    .topbar,.toc,.auth{display:none !important}
+    body::before{display:none}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN OVERLAY ============ -->
+<div class="auth" id="auth" role="dialog" aria-modal="true" aria-labelledby="auth-h">
+  <div class="auth-card">
+    <div class="auth-body">
+      <div class="auth-title">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <h2 id="auth-h">Entrar no álbum</h2>
+          <p>Copa · 2026</p>
+        </div>
+      </div>
+
+      <!-- Step 1: identify -->
+      <div class="auth-step is-active" data-step="1">
+        <div class="field">
+          <label for="i-name">Nome</label>
+          <input id="i-name" type="text" autocomplete="name" placeholder="Como devemos te chamar" />
+        </div>
+        <div class="field">
+          <label for="i-phone">Telefone</label>
+          <input id="i-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 90000-0000" />
+          <span class="hint">Enviaremos um código de 6 dígitos para verificar.</span>
+        </div>
+        <div class="auth-actions">
+          <button class="btn primary" id="send-code">Receber código</button>
+          <div class="divider">ou</div>
+          <button class="gbtn" id="google-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#EA4335" d="M12 10.2v3.92h5.45c-.24 1.4-1.7 4.1-5.45 4.1A6.22 6.22 0 1 1 12 5.8c1.78 0 2.98.76 3.66 1.41l2.5-2.4C16.46 3.4 14.42 2.5 12 2.5a9.5 9.5 0 1 0 0 19c5.48 0 9.1-3.85 9.1-9.27 0-.62-.07-1.1-.16-1.53H12z"/>
+              <path fill="#34A853" d="M3.55 7.55l3.2 2.34A5.55 5.55 0 0 1 12 5.8c1.78 0 2.98.76 3.66 1.41l2.5-2.4C16.46 3.4 14.42 2.5 12 2.5A9.5 9.5 0 0 0 3.55 7.55z"/>
+              <path fill="#FBBC05" d="M12 21.5a9.4 9.4 0 0 0 6.5-2.38l-3.1-2.5c-.83.58-1.95.96-3.4.96-2.6 0-4.8-1.74-5.6-4.13l-3.22 2.5A9.5 9.5 0 0 0 12 21.5z"/>
+              <path fill="#4285F4" d="M21.1 12.23c0-.62-.07-1.1-.16-1.53H12v3.92h5.45c-.13.75-.55 1.83-1.55 2.6l3.1 2.5C20.6 17.85 21.1 15.3 21.1 12.23z"/>
+            </svg>
+            Entrar com Google
+          </button>
+        </div>
+        <p class="auth-fine">Ao continuar você concorda com os <a href="#">termos</a> e a <a href="#">política de privacidade</a>.</p>
+      </div>
+
+      <!-- Step 2: OTP -->
+      <div class="auth-step" data-step="2">
+        <button class="auth-back" id="back-1">‹ Voltar</button>
+        <div class="field">
+          <label>Código de verificação</label>
+          <div class="otp" id="otp">
+            <input maxlength="1" inputmode="numeric" />
+            <input maxlength="1" inputmode="numeric" />
+            <input maxlength="1" inputmode="numeric" />
+            <input maxlength="1" inputmode="numeric" />
+            <input maxlength="1" inputmode="numeric" />
+            <input maxlength="1" inputmode="numeric" />
+          </div>
+        </div>
+        <div class="otp-note">
+          Enviamos um SMS para <b id="otp-phone"></b>.<br/>
+          Em ambiente de demonstração, seu código é <b id="otp-demo">000000</b>.
+        </div>
+        <div class="auth-actions">
+          <button class="btn primary" id="verify-code">Entrar no álbum</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div class="app-shell" id="app">
+
+<nav class="topbar" role="banner">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div class="brand-text">
+        <span class="b1">Copa · 2026</span>
+        <span class="b2">Colecionei</span>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="track"><div class="fill" id="fill"></div></div>
+      <div class="count"><span id="counter">0</span><span class="sub">/980</span> · <span id="pct">0%</span></div>
+    </div>
+    <div class="actions">
+      <div class="account" id="account">
+        <div class="avatar" id="avatar">·</div>
+        <div class="who">
+          <span class="n" id="acct-name">—</span>
+          <span class="p" id="acct-phone"></span>
+        </div>
+        <button class="logout" id="logout" title="Sair">↩</button>
+      </div>
+      <button class="btn" id="export" title="Imprimir ou salvar como PDF">Imprimir</button>
+      <button class="btn yellow" id="reset" title="Limpar todas as marcações">Limpar</button>
+    </div>
+  </div>
+</nav>
+
+<aside class="toc" id="toc" aria-label="Ir para seleção"></aside>
+
+<section class="hero" data-screen-label="00 Hero">
+  <div class="hero-top">
+    <span class="ed-pill">Edição 2026</span>
+  </div>
+  <span class="kicker"><span class="dot"></span>48 seleções<span class="dot y"></span>12 grupos<span class="dot"></span>980 figurinhas</span>
+  <h1>Caderno de <em>figurinhas</em><span class="acc">.</span></h1>
+  <p>Marque as figurinhas que você já colou. O progresso de cada seleção e do álbum inteiro é salvo automaticamente neste navegador — role a página para ver todas as 33 seções.</p>
+  <div class="meta">
+    <div class="row"><span class="lbl">Colecionador</span><span class="val" id="meta-name">—</span></div>
+  </div>
+</section>
+
+<section class="stats" aria-label="resumo">
+  <div class="stat is-done">
+    <span class="k">Coladas</span>
+    <span class="v"><span id="stat-done">0</span><span class="sub"> /980</span></span>
+  </div>
+  <div class="stat">
+    <span class="k">Faltando</span>
+    <span class="v" id="stat-left">1300</span>
+  </div>
+  <div class="stat">
+    <span class="k">Seleções completas</span>
+    <span class="v"><span id="stat-complete">0</span><span class="sub"> /49</span></span>
+  </div>
+  <div class="stat is-pct">
+    <span class="k">Progresso</span>
+    <span class="v" id="stat-pct">0%</span>
+  </div>
+</section>
+
+<main class="list" id="list"></main>
+
+<footer>
+  <div class="legend">
+    <span><span class="sw"></span> faltando</span>
+    <span><span class="sw done"></span> colada</span>
+    <span><span class="sw home"></span> seleção da casa</span>
+  </div>
+  <div class="right">role para o topo · boa coleção ⚽</div>
+</footer>
+
+</div><!-- /app-shell -->
+
+<script>
+  /* ============ DATA ============ */
+  const SECTIONS = [
+    { name:"Seção Inicial",       code:"FWC", group:null },
+    // Grupo A
+    { name:"México",              code:"MEX", group:"A" },
+    { name:"África do Sul",       code:"RSA", group:"A" },
+    { name:"Coreia do Sul",       code:"KOR", group:"A" },
+    { name:"República Tcheca",    code:"CZE", group:"A" },
+    // Grupo B
+    { name:"Canadá",              code:"CAN", group:"B" },
+    { name:"Bósnia-Herzegovina",  code:"BIH", group:"B" },
+    { name:"Qatar",               code:"QAT", group:"B" },
+    { name:"Suíça",               code:"SUI", group:"B" },
+    // Grupo C
+    { name:"Brasil",              code:"BRA", group:"C", home:true },
+    { name:"Marrocos",            code:"MAR", group:"C" },
+    { name:"Haiti",               code:"HAI", group:"C" },
+    { name:"Escócia",             code:"SCO", group:"C" },
+    // Grupo D
+    { name:"Estados Unidos",      code:"USA", group:"D" },
+    { name:"Paraguai",            code:"PAR", group:"D" },
+    { name:"Austrália",           code:"AUS", group:"D" },
+    { name:"Turquia",             code:"TUR", group:"D" },
+    // Grupo E
+    { name:"Alemanha",            code:"GER", group:"E" },
+    { name:"Curaçao",             code:"CUW", group:"E" },
+    { name:"Costa do Marfim",     code:"CIV", group:"E" },
+    { name:"Equador",             code:"ECU", group:"E" },
+    // Grupo F
+    { name:"Holanda",             code:"NED", group:"F" },
+    { name:"Japão",               code:"JPN", group:"F" },
+    { name:"Suécia",              code:"SWE", group:"F" },
+    { name:"Tunísia",             code:"TUN", group:"F" },
+    // Grupo G
+    { name:"Bélgica",             code:"BEL", group:"G" },
+    { name:"Egito",               code:"EGY", group:"G" },
+    { name:"Irã",                 code:"IRN", group:"G" },
+    { name:"Nova Zelândia",       code:"NZL", group:"G" },
+    // Grupo H
+    { name:"Espanha",             code:"ESP", group:"H" },
+    { name:"Cabo Verde",          code:"CPV", group:"H" },
+    { name:"Arábia Saudita",      code:"KSA", group:"H" },
+    { name:"Uruguai",             code:"URU", group:"H" },
+    // Grupo I
+    { name:"França",              code:"FRA", group:"I" },
+    { name:"Senegal",             code:"SEN", group:"I" },
+    { name:"Iraque",              code:"IRQ", group:"I" },
+    { name:"Noruega",             code:"NOR", group:"I" },
+    // Grupo J
+    { name:"Argentina",           code:"ARG", group:"J" },
+    { name:"Argélia",             code:"ALG", group:"J" },
+    { name:"Áustria",             code:"AUT", group:"J" },
+    { name:"Jordânia",            code:"JOR", group:"J" },
+    // Grupo K
+    { name:"Portugal",            code:"POR", group:"K" },
+    { name:"Congo DR",            code:"COD", group:"K" },
+    { name:"Uzbequistão",         code:"UZB", group:"K" },
+    { name:"Colômbia",            code:"COL", group:"K" },
+    // Grupo L
+    { name:"Inglaterra",          code:"ENG", group:"L" },
+    { name:"Croácia",             code:"CRO", group:"L" },
+    { name:"Gana",                code:"GHA", group:"L" },
+    { name:"Panamá",              code:"PAN", group:"L" },
+  ];
+
+  const STORAGE_KEY = "copa-album-state-v5";
+  const USER_KEY    = "copa-album-user-v1";
+
+  /* ============ AUTH ============ */
+  const authEl = document.getElementById("auth");
+  const appEl  = document.getElementById("app");
+  const steps  = authEl.querySelectorAll(".auth-step");
+
+  function setStep(n){
+    steps.forEach(s => s.classList.toggle("is-active", Number(s.dataset.step) === n));
+  }
+  function openAuth(){ authEl.classList.add("is-open"); setStep(1); }
+  function closeAuth(){ authEl.classList.remove("is-open"); }
+
+  function formatPhone(v){
+    const d = v.replace(/\D/g,"").slice(0,11);
+    if(d.length <= 2) return d;
+    if(d.length <= 7) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+    if(d.length <= 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+    return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+  }
+  const phoneInput = document.getElementById("i-phone");
+  phoneInput.addEventListener("input", e => {
+    e.target.value = formatPhone(e.target.value);
+  });
+
+  // Generate a fake 6-digit token for the demo
+  function genToken(){
+    let s = "";
+    for(let i=0;i<6;i++) s += Math.floor(Math.random()*10);
+    return s;
+  }
+  let demoToken = "000000";
+
+  document.getElementById("send-code").addEventListener("click", () => {
+    const name  = document.getElementById("i-name").value.trim();
+    const phone = phoneInput.value.trim();
+    if(!name){ document.getElementById("i-name").focus(); return; }
+    if(phone.replace(/\D/g,"").length < 10){ phoneInput.focus(); return; }
+    demoToken = genToken();
+    document.getElementById("otp-phone").textContent = phone;
+    document.getElementById("otp-demo").textContent = demoToken;
+    setStep(2);
+    setTimeout(() => authEl.querySelector('.otp input').focus(), 50);
+  });
+
+  document.getElementById("back-1").addEventListener("click", () => setStep(1));
+
+  // OTP wiring
+  const otpInputs = [...authEl.querySelectorAll(".otp input")];
+  otpInputs.forEach((inp, i) => {
+    inp.addEventListener("input", e => {
+      e.target.value = e.target.value.replace(/\D/g,"").slice(0,1);
+      if(e.target.value && i < otpInputs.length - 1) otpInputs[i+1].focus();
+    });
+    inp.addEventListener("keydown", e => {
+      if(e.key === "Backspace" && !e.target.value && i > 0) otpInputs[i-1].focus();
+    });
+    inp.addEventListener("paste", e => {
+      const t = (e.clipboardData || window.clipboardData).getData("text").replace(/\D/g,"").slice(0,6);
+      if(t.length){
+        e.preventDefault();
+        [...t].forEach((c, j) => { if(otpInputs[j]) otpInputs[j].value = c; });
+        otpInputs[Math.min(t.length, otpInputs.length-1)].focus();
+      }
+    });
+  });
+
+  document.getElementById("verify-code").addEventListener("click", verifyCode);
+  function verifyCode(){
+    const code = otpInputs.map(i => i.value).join("");
+    if(code !== demoToken){
+      otpInputs.forEach(i => i.style.borderColor = "#c4423a");
+      setTimeout(() => otpInputs.forEach(i => i.style.borderColor = ""), 1200);
+      return;
+    }
+    const user = {
+      name: document.getElementById("i-name").value.trim(),
+      phone: phoneInput.value.trim(),
+      provider: "phone",
+    };
+    saveUser(user);
+    enterApp(user);
+  }
+
+  document.getElementById("google-btn").addEventListener("click", () => {
+    // simulate google flow
+    const user = {
+      name: document.getElementById("i-name").value.trim() || "Conta Google",
+      phone: "",
+      provider: "google",
+    };
+    saveUser(user);
+    enterApp(user);
+  });
+
+  function saveUser(u){
+    try{ localStorage.setItem(USER_KEY, JSON.stringify(u)); }catch(e){}
+  }
+  function loadUser(){
+    try{ return JSON.parse(localStorage.getItem(USER_KEY) || "null"); }catch(e){ return null; }
+  }
+
+  function enterApp(user){
+    closeAuth();
+    appEl.classList.add("is-on");
+    // hero name
+    document.getElementById("meta-name").textContent = user.name || "—";
+    // account chip
+    document.getElementById("acct-name").textContent = user.name || "Conta";
+    document.getElementById("acct-phone").textContent = user.phone || (user.provider === "google" ? "via Google" : "");
+    const initials = (user.name || "·").trim().split(/\s+/).slice(0,2).map(w => w[0] || "").join("").toUpperCase() || "·";
+    document.getElementById("avatar").textContent = initials;
+  }
+
+  document.getElementById("logout").addEventListener("click", () => {
+    if(!confirm("Sair da sua conta? O progresso continua salvo neste navegador.")) return;
+    try{ localStorage.removeItem(USER_KEY); }catch(e){}
+    appEl.classList.remove("is-on");
+    openAuth();
+    // clear fields
+    document.getElementById("i-name").value = "";
+    document.getElementById("i-phone").value = "";
+    otpInputs.forEach(i => i.value = "");
+  });
+
+  /* ============ ALBUM ============ */
+  const state = (() => {
+    try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
+    catch(e){ return {}; }
+  })();
+  function key(idx, n){ return idx + "-" + n; }
+  function save(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+
+  const list = document.getElementById("list");
+  const toc  = document.getElementById("toc");
+
+  let lastGroup = "__none__";
+  SECTIONS.forEach((s, idx) => {
+    // Insert a group divider when the group letter changes
+    if(s.group && s.group !== lastGroup){
+      const div = document.createElement("div");
+      div.className = "group-divider";
+      div.id = "grp-" + s.group;
+      div.innerHTML = `
+        <span class="g-letter">${s.group}</span>
+        <span class="g-label">Grupo ${s.group}</span>
+        <span class="g-rule"></span>
+        <span class="g-count" data-grp="${s.group}">0/80</span>
+      `;
+      list.appendChild(div);
+
+      const ga = document.createElement("a");
+      ga.href = "#grp-" + s.group;
+      ga.className = "toc-group";
+      ga.innerHTML = `<span>Grupo ${s.group}</span><span class="n"></span>`;
+      toc.appendChild(ga);
+    }
+    lastGroup = s.group || lastGroup;
+
+    const sec = document.createElement("section");
+    sec.className = "section"
+      + (s.home ? " is-home" : "")
+      + (s.host ? " is-host" : "");
+    sec.id = "sec-" + idx;
+    sec.dataset.idx = idx;
+    sec.dataset.group = s.group || "";
+    sec.dataset.screenLabel = String(idx+1).padStart(2,"0") + " " + s.name;
+    sec.innerHTML = `
+      <div class="section-head">
+        <div class="section-label">
+          <span class="section-num">${String(idx+1).padStart(2,"0")}</span>
+          <span class="section-name">${s.name}</span>
+          <span class="section-code">${s.code}</span>
+        </div>
+        <div class="section-progress"><span class="badge">completa</span><span><span class="done">0</span>/20</span></div>
+      </div>
+      <div class="tiles"></div>
+    `;
+    const tiles = sec.querySelector(".tiles");
+    for(let i=1;i<=20;i++){
+      const t = document.createElement("button");
+      t.className = "tile";
+      t.type = "button";
+      t.textContent = String(i).padStart(2,"0");
+      const k = key(idx, i);
+      if(state[k]) t.classList.add("checked");
+      t.addEventListener("click", () => {
+        const on = t.classList.toggle("checked");
+        state[k] = on || undefined;
+        if(!on) delete state[k];
+        save();
+        updateSection(idx);
+        updateProgress();
+      });
+      tiles.appendChild(t);
+    }
+    list.appendChild(sec);
+
+    const a = document.createElement("a");
+    a.href = "#sec-" + idx;
+    a.innerHTML = `<span>${s.name}</span><span class="n">0/20</span>`;
+    a.dataset.idx = idx;
+    toc.appendChild(a);
+  });
+
+  function countDone(idx){
+    let n = 0;
+    for(let i=1;i<=20;i++) if(state[key(idx,i)]) n++;
+    return n;
+  }
+  function updateSection(idx){
+    const sec = document.getElementById("sec-" + idx);
+    const done = countDone(idx);
+    const prog = sec.querySelector(".section-progress");
+    sec.querySelector(".section-progress .done").textContent = done;
+    prog.classList.toggle("complete", done === 20);
+    const tocLink = toc.querySelector('a[data-idx="' + idx + '"]');
+    if(tocLink){
+      tocLink.querySelector(".n").textContent = done + "/20";
+      tocLink.classList.toggle("complete", done === 20);
+    }
+  }
+
+  function updateGroupCounters(){
+    // Group has 4 teams × 20 = 80 stickers
+    const groups = {};
+    SECTIONS.forEach((s, idx) => {
+      if(!s.group) return;
+      groups[s.group] = (groups[s.group] || 0) + countDone(idx);
+    });
+    Object.entries(groups).forEach(([g, n]) => {
+      const el = list.querySelector(`.g-count[data-grp="${g}"]`);
+      if(el) el.textContent = n + "/80";
+      const divider = document.getElementById("grp-" + g);
+      if(divider) divider.classList.toggle("complete", n === 80);
+    });
+  }
+
+  const fill = document.getElementById("fill");
+  const counter = document.getElementById("counter");
+  const pct = document.getElementById("pct");
+  const statDone = document.getElementById("stat-done");
+  const statLeft = document.getElementById("stat-left");
+  const statComplete = document.getElementById("stat-complete");
+  const statPct = document.getElementById("stat-pct");
+
+  function updateProgress(){
+    const total = SECTIONS.length * 20;
+    const done = Object.values(state).filter(Boolean).length;
+    const p = done / total;
+    fill.style.width = (p*100).toFixed(2) + "%";
+    counter.textContent = done;
+    pct.textContent = Math.round(p*100) + "%";
+    statDone.textContent = done;
+    statLeft.textContent = total - done;
+    statPct.textContent = Math.round(p*100) + "%";
+    let complete = 0;
+    SECTIONS.forEach((s, idx) => { if(countDone(idx) === 20) complete++; });
+    statComplete.textContent = complete;
+    updateGroupCounters();
+  }
+
+  SECTIONS.forEach((s, idx) => updateSection(idx));
+  updateProgress();
+
+  document.getElementById("reset").addEventListener("click", () => {
+    if(!confirm("Apagar todas as figurinhas marcadas?")) return;
+    Object.keys(state).forEach(k => delete state[k]);
+    save();
+    document.querySelectorAll(".tile.checked").forEach(t => t.classList.remove("checked"));
+    SECTIONS.forEach((s, idx) => updateSection(idx));
+    updateProgress();
+  });
+  document.getElementById("export").addEventListener("click", () => window.print());
+
+  /* ============ BOOT ============ */
+  const existing = loadUser();
+  if(existing){
+    enterApp(existing);
+  } else {
+    openAuth();
+  }
+</script>
+
+</body>
+</html>
