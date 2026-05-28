@@ -104,8 +104,29 @@
     white-space:nowrap;
   }
   .nav-drawer .d-count .sub{color:var(--ink-3);font-weight:400}
-  .nav-drawer .d-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-  .nav-drawer .d-btns{display:flex;gap:6px}
+  .nav-drawer .d-user{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 0;border-top:1px solid var(--line);
+  }
+  .nav-drawer .d-user-info{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+  .nav-drawer .d-user-info .d-name{font-weight:600;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .nav-drawer .d-user-info .d-phone{font-size:10px;color:var(--ink-3);font-family:'JetBrains Mono',monospace}
+  .nav-drawer .d-btns{display:flex;gap:6px;flex-wrap:wrap}
+  .nav-drawer .d-btns .btn{flex:1;text-align:center;min-width:70px}
+  /* Search bar */
+  .search-bar{max-width:var(--maxw);margin:0 auto;padding:16px var(--pad-x) 4px}
+  .search-bar-inner{position:relative}
+  .search-bar-inner svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none;width:16px;height:16px}
+  .search-bar-inner input{
+    width:100%;padding:10px 12px 10px 40px;
+    border:1px solid var(--line-2);border-radius:99px;
+    background:var(--paper);font:500 14px/1.2 'Inter',sans-serif;
+    color:var(--ink);outline:none;
+    transition:border-color .12s, box-shadow .12s;
+  }
+  .search-bar-inner input::placeholder{color:var(--ink-3)}
+  .search-bar-inner input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(6,122,58,.1)}
+  .no-results{text-align:center;padding:40px var(--pad-x);color:var(--ink-3);font-family:'JetBrains Mono',monospace;font-size:12px;display:none;letter-spacing:.1em}
   .brand{display:flex;align-items:center;gap:10px;min-width:0}
   .brand-mark{
     width:32px;height:32px;border-radius:50%;
@@ -702,7 +723,7 @@
     </div>
     <div class="progress-wrap">
       <div class="track"><div class="fill" id="fill"></div></div>
-      <div class="count"><span id="counter">0</span><span class="sub">/980</span> · <span id="pct">0%</span></div>
+      <div class="count"><span id="counter">0</span><span class="sub">/994</span> · <span id="pct">0%</span></div>
     </div>
     <div class="actions">
       <div class="account" id="account">
@@ -725,21 +746,19 @@
   <div class="nav-drawer" id="nav-drawer">
     <div class="d-progress">
       <div class="d-track"><div class="d-fill" id="d-fill"></div></div>
-      <div class="d-count"><span id="d-counter">0</span><span class="sub">/980</span> · <span id="d-pct">0%</span></div>
+      <div class="d-count"><span id="d-counter">0</span><span class="sub">/994</span> · <span id="d-pct">0%</span></div>
     </div>
-    <div class="d-row">
-      <div class="account" id="d-account">
-        <div class="avatar" id="d-avatar">·</div>
-        <div class="who">
-          <span class="n" id="d-acct-name">—</span>
-          <span class="p" id="d-acct-phone"></span>
-        </div>
-        <button class="logout" id="d-logout" title="Sair">↩</button>
+    <div class="d-user">
+      <div class="avatar" id="d-avatar">·</div>
+      <div class="d-user-info">
+        <span class="d-name" id="d-acct-name">—</span>
+        <span class="d-phone" id="d-acct-phone"></span>
       </div>
-      <div class="d-btns">
-        <button class="btn" id="d-export">Imprimir</button>
-        <button class="btn yellow" id="d-reset">Limpar</button>
-      </div>
+    </div>
+    <div class="d-btns">
+      <button class="btn" id="d-export">Imprimir</button>
+      <button class="btn yellow" id="d-reset">Limpar</button>
+      <button class="btn" id="d-logout">Sair ↩</button>
     </div>
   </div>
 </nav>
@@ -750,7 +769,7 @@
   <div class="hero-top">
     <span class="ed-pill">Edição 2026</span>
   </div>
-  <span class="kicker"><span class="dot"></span>48 seleções<span class="dot y"></span>12 grupos<span class="dot"></span>980 figurinhas</span>
+  <span class="kicker"><span class="dot"></span>48 seleções<span class="dot y"></span>12 grupos<span class="dot"></span>994 figurinhas</span>
   <h1>Caderno de <em>figurinhas</em><span class="acc">.</span></h1>
   <p>Marque as figurinhas que você já colou. O progresso de cada seleção e do álbum inteiro é salvo automaticamente neste navegador — role a página para ver todas as 33 seções.</p>
   <div class="meta">
@@ -761,21 +780,29 @@
 <section class="stats" aria-label="resumo">
   <div class="stat is-done">
     <span class="k">Coladas</span>
-    <span class="v"><span id="stat-done">0</span><span class="sub"> /980</span></span>
+    <span class="v"><span id="stat-done">0</span><span class="sub"> /994</span></span>
   </div>
   <div class="stat">
     <span class="k">Faltando</span>
-    <span class="v" id="stat-left">1300</span>
+    <span class="v" id="stat-left">994</span>
   </div>
   <div class="stat">
     <span class="k">Seleções completas</span>
-    <span class="v"><span id="stat-complete">0</span><span class="sub"> /49</span></span>
+    <span class="v"><span id="stat-complete">0</span><span class="sub"> /50</span></span>
   </div>
   <div class="stat is-pct">
     <span class="k">Progresso</span>
     <span class="v" id="stat-pct">0%</span>
   </div>
 </section>
+
+<div class="search-bar">
+  <div class="search-bar-inner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" id="search-input" placeholder="Pesquisar seleção ou código..." autocomplete="off" />
+  </div>
+</div>
+<div class="no-results" id="no-results">Nenhuma seleção encontrada.</div>
 
 <main class="list" id="list"></main>
 
@@ -854,6 +881,8 @@
     { name:"Croácia",             code:"CRO", group:"L" },
     { name:"Gana",                code:"GHA", group:"L" },
     { name:"Panamá",              code:"PAN", group:"L" },
+    // Especial
+    { name:"Coca-Cola",           code:"CCC", group:null, count:14 },
   ];
 
   const STORAGE_KEY = "copa-album-state-v5";
@@ -1010,6 +1039,11 @@
   const list = document.getElementById("list");
   const toc  = document.getElementById("toc");
 
+  const groupMaxMap = {};
+  SECTIONS.forEach(s => {
+    if(s.group) groupMaxMap[s.group] = (groupMaxMap[s.group]||0) + (s.count||20);
+  });
+
   let lastGroup = "__none__";
   SECTIONS.forEach((s, idx) => {
     // Insert a group divider when the group letter changes
@@ -1021,7 +1055,7 @@
         <span class="g-letter">${s.group}</span>
         <span class="g-label">Grupo ${s.group}</span>
         <span class="g-rule"></span>
-        <span class="g-count" data-grp="${s.group}">0/80</span>
+        <span class="g-count" data-grp="${s.group}">0/${groupMaxMap[s.group]}</span>
       `;
       list.appendChild(div);
 
@@ -1048,12 +1082,12 @@
           <span class="section-name">${s.name}</span>
           <span class="section-code">${s.code}</span>
         </div>
-        <div class="section-progress"><span class="badge">completa</span><span><span class="done">0</span>/20</span></div>
+        <div class="section-progress"><span class="badge">completa</span><span><span class="done">0</span>/${sectionCount(idx)}</span></div>
       </div>
       <div class="tiles"></div>
     `;
     const tiles = sec.querySelector(".tiles");
-    for(let i=1;i<=20;i++){
+    for(let i=1;i<=sectionCount(idx);i++){
       const t = document.createElement("button");
       t.className = "tile";
       t.type = "button";
@@ -1074,41 +1108,47 @@
 
     const a = document.createElement("a");
     a.href = "#sec-" + idx;
-    a.innerHTML = `<span>${s.name}</span><span class="n">0/20</span>`;
+    a.innerHTML = `<span>${s.name}</span><span class="n">0/${sectionCount(idx)}</span>`;
     a.dataset.idx = idx;
     toc.appendChild(a);
   });
 
+  function sectionCount(idx){ return SECTIONS[idx].count || 20; }
+  function totalStickers(){ return SECTIONS.reduce((t,s) => t+(s.count||20), 0); }
+
   function countDone(idx){
     let n = 0;
-    for(let i=1;i<=20;i++) if(state[key(idx,i)]) n++;
+    for(let i=1;i<=sectionCount(idx);i++) if(state[key(idx,i)]) n++;
     return n;
   }
   function updateSection(idx){
     const sec = document.getElementById("sec-" + idx);
     const done = countDone(idx);
+    const cnt = sectionCount(idx);
     const prog = sec.querySelector(".section-progress");
     sec.querySelector(".section-progress .done").textContent = done;
-    prog.classList.toggle("complete", done === 20);
+    prog.classList.toggle("complete", done === cnt);
     const tocLink = toc.querySelector('a[data-idx="' + idx + '"]');
     if(tocLink){
-      tocLink.querySelector(".n").textContent = done + "/20";
-      tocLink.classList.toggle("complete", done === 20);
+      tocLink.querySelector(".n").textContent = done + "/" + cnt;
+      tocLink.classList.toggle("complete", done === cnt);
     }
   }
 
   function updateGroupCounters(){
-    // Group has 4 teams × 20 = 80 stickers
     const groups = {};
+    const groupMax = {};
     SECTIONS.forEach((s, idx) => {
       if(!s.group) return;
       groups[s.group] = (groups[s.group] || 0) + countDone(idx);
+      groupMax[s.group] = (groupMax[s.group] || 0) + sectionCount(idx);
     });
     Object.entries(groups).forEach(([g, n]) => {
+      const max = groupMax[g];
       const el = list.querySelector(`.g-count[data-grp="${g}"]`);
-      if(el) el.textContent = n + "/80";
+      if(el) el.textContent = n + "/" + max;
       const divider = document.getElementById("grp-" + g);
-      if(divider) divider.classList.toggle("complete", n === 80);
+      if(divider) divider.classList.toggle("complete", n === max);
     });
   }
 
@@ -1121,9 +1161,9 @@
   const statPct = document.getElementById("stat-pct");
 
   function updateProgress(){
-    const total = SECTIONS.length * 20;
-    const done = Object.values(state).filter(Boolean).length;
-    const p = done / total;
+    const total = totalStickers();
+    const done = SECTIONS.reduce((sum, s, idx) => sum + countDone(idx), 0);
+    const p = total > 0 ? done / total : 0;
     fill.style.width = (p*100).toFixed(2) + "%";
     counter.textContent = done;
     pct.textContent = Math.round(p*100) + "%";
@@ -1137,7 +1177,7 @@
     if(dCounter) dCounter.textContent = done;
     if(dPct) dPct.textContent = Math.round(p*100) + "%";
     let complete = 0;
-    SECTIONS.forEach((s, idx) => { if(countDone(idx) === 20) complete++; });
+    SECTIONS.forEach((s, idx) => { if(countDone(idx) === sectionCount(idx)) complete++; });
     statComplete.textContent = complete;
     updateGroupCounters();
   }
@@ -1154,6 +1194,30 @@
     updateProgress();
   });
   document.getElementById("export").addEventListener("click", () => window.print());
+
+  // Search
+  document.getElementById("search-input").addEventListener("input", function(){
+    const q = this.value.trim().toLowerCase();
+    let anyVisible = false;
+    SECTIONS.forEach((s, idx) => {
+      const sec = document.getElementById("sec-" + idx);
+      if(!sec) return;
+      const match = !q || s.name.toLowerCase().includes(q) || s.code.toLowerCase().includes(q);
+      sec.style.display = match ? "" : "none";
+      if(match) anyVisible = true;
+    });
+    document.querySelectorAll(".group-divider").forEach(div => {
+      const grp = div.id.replace("grp-", "");
+      const hasVisible = SECTIONS.some((s, idx) => {
+        if(s.group !== grp) return false;
+        const sec = document.getElementById("sec-" + idx);
+        return sec && sec.style.display !== "none";
+      });
+      div.style.display = hasVisible ? "" : "none";
+    });
+    const noRes = document.getElementById("no-results");
+    if(noRes) noRes.style.display = (!anyVisible && q) ? "block" : "none";
+  });
 
   /* ============ BOOT ============ */
   const existing = loadUser();
